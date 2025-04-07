@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Steam Collection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>My Steam Collection</h1>
+        </div>
+
+        <div class="controls">
+            <div class="controls-row">
+                <div class="search-container">
+                    <input type="text" class="search" placeholder="Search games..." id="searchInput">
+                </div>
+            </div>
+
+            <div class="controls-row">
+                <div class="sort-buttons">
+                    <button class="sort-btn" data-sort="name">Name (A-Z)</button>
+                    <button class="sort-btn" data-sort="playtime">Playtime</button>
+                    <button class="sort-btn" data-sort="last_played">Last Played</button>
+                    <button class="sort-btn" data-sort="windows">Windows</button>
+                    <button class="sort-btn" data-sort="mac">Mac</button>
+                    <button class="sort-btn" data-sort="linux">Linux</button>
+                    <button class="sort-btn" data-sort="deck">Steam Deck</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="games-grid" id="gamesContainer">
+            {% for game in games %}
+            <div class="game" data-name="{{ game.name.lower() }}" data-playtime="{{ game.playtime_hours }}"
+                data-last-played="{{ game.last_played }}" data-windows="{{ game.playtime_windows_forever }}"
+                data-mac="{{ game.playtime_mac_forever }}" data-linux="{{ game.playtime_linux_forever }}"
+                data-deck="{{ game.playtime_deck_forever }}">
+                <div class="cover-container">
+                    {% if game.cover_path %}
+                    <img src="{{ game.cover_path }}" alt="{{ game.name }} Cover" class="cover"
+                        onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\'cover-placeholder\'><div class=\'loading\'></div></div>';">
+                    {% else %}
+                    <div class="cover-placeholder">
+                        <div class="loading"></div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="info">
+                    <h2>{{ game.name }}</h2>
+
+                    <div class="stats">
+                        <div class="stat playtime">
+                            <span class="stat-label">Total Playtime</span>
+                            <span class="stat-value">{{ game.playtime_hours }} hours</span>
+                        </div>
+
+                        <div class="stat">
+                            <span class="stat-label">App ID</span>
+                            <span class="stat-value">{{ game.appid }}</span>
+                        </div>
+
+                        <div class="stat">
+                            <span class="stat-label">Windows</span>
+                            <span class="stat-value">{{ game.playtime_windows_forever }} min</span>
+                        </div>
+
+                        <div class="stat">
+                            <span class="stat-label">Mac</span>
+                            <span class="stat-value">{{ game.playtime_mac_forever }} min</span>
+                        </div>
+
+                        <div class="stat">
+                            <span class="stat-label">Linux</span>
+                            <span class="stat-value">{{ game.playtime_linux_forever }} min</span>
+                        </div>
+
+                        <div class="stat">
+                            <span class="stat-label">Steam Deck</span>
+                            <span class="stat-value">{{ game.playtime_deck_forever }} min</span>
+                        </div>
+
+                        <div class="stat last-played">
+                            <span class="stat-label">Last Played</span>
+                            <span class="stat-value">{{ game.last_played }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const gamesContainer = document.getElementById('gamesContainer');
+            const searchInput = document.getElementById('searchInput');
+            const sortButtons = document.querySelectorAll('.sort-btn');
+            const games = Array.from(document.querySelectorAll('.game'));
+
+            let currentSort = 'name';
+            let sortDirection = 'asc';
+
+            sortGames();
+
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+
+                games.forEach(game => {
+                    const gameName = game.dataset.name;
+                    if (gameName.includes(searchTerm)) {
+                        game.style.display = '';
+                    } else {
+                        game.style.display = 'none';
+                    }
+                });
+
+                const visibleGames = games.filter(game => game.style.display !== 'none');
+                showNoResultsMessage(visibleGames.length === 0);
+            });
+
+            sortButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const sortType = this.dataset.sort;
+
+                    if (currentSort === sortType) {
+                        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort = sortType;
+                        sortDirection = 'asc';
+                    }
+
+                    sortButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    updateSortButtonText();
+
+                    sortGames();
+                });
+            });
+
+            function sortGames() {
+                games.sort((a, b) => {
+                    let valueA, valueB;
+
+                    switch (currentSort) {
+                        case 'name':
+                            valueA = a.dataset.name;
+                            valueB = b.dataset.name;
+                            return sortDirection === 'asc'
+                                ? valueA.localeCompare(valueB)
+                                : valueB.localeCompare(valueA);
+
+                        case 'playtime':
+                            valueA = parseFloat(a.dataset.playtime) || 0;
+                            valueB = parseFloat(b.dataset.playtime) || 0;
+                            break;
+
+                        case 'last_played':
+                            valueA = new Date(a.dataset.lastPlayed || '1970-01-01');
+                            valueB = new Date(b.dataset.lastPlayed || '1970-01-01');
+                            return sortDirection === 'asc'
+                                ? valueA - valueB
+                                : valueB - valueA;
+
+                        case 'windows':
+                            valueA = parseFloat(a.dataset.windows) || 0;
+                            valueB = parseFloat(b.dataset.windows) || 0;
+                            break;
+
+                        case 'mac':
+                            valueA = parseFloat(a.dataset.mac) || 0;
+                            valueB = parseFloat(b.dataset.mac) || 0;
+                            break;
+
+                        case 'linux':
+                            valueA = parseFloat(a.dataset.linux) || 0;
+                            valueB = parseFloat(b.dataset.linux) || 0;
+                            break;
+
+                        case 'deck':
+                            valueA = parseFloat(a.dataset.deck) || 0;
+                            valueB = parseFloat(b.dataset.deck) || 0;
+                            break;
+
+                        default:
+                            return 0;
+                    }
+
+                    return sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
+                });
+
+                games.forEach(game => gamesContainer.appendChild(game));
+            }
+
+            function updateSortButtonText() {
+                sortButtons.forEach(button => {
+                    if (button.dataset.sort === currentSort) {
+                        const arrow = sortDirection === 'asc' ? '↑' : '↓';
+                        button.textContent = button.textContent.replace(/↑|↓/g, '') + ' ' + arrow;
+                    } else {
+                        button.textContent = button.textContent.replace(/↑|↓/g, '');
+                    }
+                });
+            }
+
+            function showNoResultsMessage(show) {
+                let message = document.querySelector('.no-results');
+
+                if (show && !message) {
+                    message = document.createElement('div');
+                    message.className = 'no-results';
+                    message.textContent = 'No games found matching your search';
+                    gamesContainer.appendChild(message);
+                } else if (!show && message) {
+                    message.remove();
+                }
+            }
+
+            document.querySelector(`.sort-btn[data-sort="${currentSort}"]`).classList.add('active');
+            updateSortButtonText();
+        });
+    </script>
+</body>
+
+</html>
