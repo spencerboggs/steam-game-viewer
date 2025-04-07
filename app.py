@@ -3,11 +3,30 @@ import json
 import datetime
 from flask import Flask, render_template, send_from_directory
 from getcover import download_cover
+from getgames import get_owned_games, save_owned_games
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
+    if not os.path.exists('owned_games.json'):
+        owned_games = get_owned_games(os.getenv('STEAM_ID64'), os.getenv('STEAM_API_KEY'))
+        if owned_games:
+            save_owned_games(owned_games)
+        else:
+            return "Failed to fetch owned games."
+    else:
+        with open('owned_games.json', 'r', encoding='utf-8') as f:
+            owned_games = json.load(f)
+            if 'response' not in owned_games or 'games' not in owned_games['response']:
+                owned_games = get_owned_games(os.getenv('STEAM_ID64'), os.getenv('STEAM_API_KEY'))
+                if owned_games:
+                    save_owned_games(owned_games)
+                else:
+                    return "Failed to fetch owned games."
+        
+    # TODO: Add ability to paste in Steam ID and Key and refresh the page
+
     with open('owned_games.json', 'r', encoding='utf-8') as f:
         games = json.load(f)['response']['games']
     
