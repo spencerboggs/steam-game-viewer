@@ -86,6 +86,7 @@ body {
     font-size: 1rem;
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
 }
 
 .search:focus {
@@ -153,7 +154,6 @@ body {
     color: var(--darker);
     font-weight: 600;
 }
-
 
 .games-grid {
     display: grid;
@@ -263,7 +263,7 @@ h2 {
     border-radius: 50%;
     animation: spin 1s linear infinite;
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -288,26 +288,142 @@ h2 {
     font-size: 1.1rem;
 }
 
-@keyframes spin {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
+#steamCredsForm {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
+.steam-api-key,
+.steam-id64 {
+    flex: 1 1 calc(50% - 15px);
+    min-width: 300px;
+    max-width: 400px;
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.steam-api-key label,
+.steam-id64 label {
+    display: block;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.steam-api-key input,
+.steam-id64 input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+}
+
+.steam-api-key input:focus,
+.steam-id64 input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.2);
+}
+
+#steamCredsForm .refresh-btn {
+    flex: 0 0 auto;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+#steamCredsForm .refresh-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.credentials-form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    font-weight: 500;
+    height: 1.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.2);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background: var(--primary);
+    color: var(--darker);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+    background: #00b4e6;
+}
+
+.error {
+    color: var(--accent);
+    margin: 10px 0;
+    text-align: center;
+    font-weight: 500;
 }
 
 @media (max-width: 768px) {
@@ -332,5 +448,37 @@ h2 {
     .sort-buttons {
         justify-content: center;
         width: 100%;
+    }
+
+    .steam-api-key,
+    .steam-id64 {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    #steamCredsForm .refresh-btn {
+        width: 100%;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

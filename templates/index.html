@@ -16,6 +16,22 @@
         </div>
 
         <div class="controls">
+            
+            <!-- Add a section to override STEAM_API_KEY and STEAM_ID64 -->
+            <!-- <div class="controls-row">
+                <form id="steamCredsForm" onsubmit="submitSteamCredentials(event)">
+                    <div class="steam-api-key">
+                        <label for="steamApiKey">Steam API Key:</label>
+                        <input type="text" id="steamApiKey" value="{{ steam_api_key }}">
+                    </div>
+                    <div class="steam-id64">
+                        <label for="steamId64">Steam ID64:</label>
+                        <input type="text" id="steamId64" value="{{ steam_id64 }}">
+                    </div>
+                    <button type="submit" class="refresh-btn">Update Credentials</button>
+                </form>
+            </div> -->
+
             <div class="controls-row">
                 <div class="search-container">
                     <input type="text" class="search" placeholder="Search games..." id="searchInput">
@@ -224,6 +240,23 @@
                 } else if (!show && message) {
                     message.remove();
                 }
+            }
+
+            function submitSteamCredentials(event) {
+                event.preventDefault();
+                const steamApiKey = document.getElementById('steamApiKey').value;
+                const steamId64 = document.getElementById('steamId64').value;
+
+                if (!steamApiKey || !steamId64) {
+                    alert('Please enter both Steam API Key and Steam ID64');
+                    return;
+                }
+
+                const submitBtn = event.target.querySelector('button[type="submit"]');
+                submitBtn.textContent = 'Updating...';
+                submitBtn.disabled = true;
+
+                window.location.href = `/?steam_api_key=${encodeURIComponent(steamApiKey)}&steam_id64=${encodeURIComponent(steamId64)}`;
             }
 
             document.querySelector(`.sort-btn[data-sort="${currentSort}"]`).classList.add('active');
