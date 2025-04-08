@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ game.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to all games</a>
+        <div class="game-details">
+            <h1>{{ game.name }}</h1>
+            {% if game.header_image %}
+            <div class="cover-container">
+                <img src="{{ game.header_image }}" alt="{{ game.name }} header" class="cover">
+            </div>
+            {% endif %}
+
+            <div class="details-grid">
+                <div class="detail">
+                    <span class="detail-label">Type</span>
+                    <span class="detail-value">{{ game.type }}</span>
+                </div>
+
+                <div class="detail">
+                    <span class="detail-label">Genres</span>
+                    <span class="detail-value">{{ game.genres | map(attribute='description') | join(', ') }}</span>
+                </div>
+
+                <div class="detail">
+                    <span class="detail-label">Release Date</span>
+                    <span class="detail-value">{{ game.release_date.date }}</span>
+                </div>
+
+                <div class="detail">
+                    <span class="detail-label">Developers</span>
+                    <span class="detail-value">{{ game.developers | join(', ') }}</span>
+                </div>
+
+                <div class="detail">
+                    <span class="detail-label">Publishers</span>
+                    <span class="detail-value">{{ game.publishers | join(', ') }}</span>
+                </div>
+            </div>
+
+            {% if game.short_description %}
+            <div class="description">
+                <h2>About</h2>
+                <p>{{ game.short_description }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>

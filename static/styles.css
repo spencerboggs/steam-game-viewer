@@ -482,3 +482,114 @@ h2 {
         transform: translateY(0);
     }
 }
+
+.flash.warning {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffc107;
+    padding: 12px 20px;
+    border-left: 4px solid #ffc107;
+    border-radius: 6px;
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 30px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--primary);
+}
+
+.game-details {
+    background: var(--card-bg);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0;
+}
+
+.game-details h1 {
+    font-size: 2rem;
+    margin: 0;
+    padding: 25px 25px 15px;
+    color: white;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    padding: 0 25px 25px;
+}
+
+.detail {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detail-label {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+}
+
+.detail-value {
+    display: block;
+    color: white;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.description {
+    padding: 0 25px 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 15px;
+    padding-top: 25px;
+}
+
+.description h2 {
+    font-size: 1.3rem;
+    margin: 0 0 15px 0;
+    color: white;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.description p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .game-details h1 {
+        font-size: 1.8rem;
+        padding: 20px 20px 10px;
+    }
+
+    .details-grid,
+    .description {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}

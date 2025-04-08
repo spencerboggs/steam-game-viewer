@@ -54,16 +54,29 @@
             </div>
         </div>
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, message in messages %}
+            <li class="flash {{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
         <div class="games-grid" id="gamesContainer">
             {% for game in games %}
             <div class="game" data-name="{{ game.name.lower() }}" data-playtime="{{ game.playtime_hours }}"
                 data-last-played="{{ game.last_played }}" data-windows="{{ game.playtime_windows_forever }}"
                 data-mac="{{ game.playtime_mac_forever }}" data-linux="{{ game.playtime_linux_forever }}"
                 data-deck="{{ game.playtime_deck_forever }}">
+
                 <div class="cover-container">
                     {% if game.cover_path %}
-                    <img src="{{ game.cover_path }}" alt="{{ game.name }} Cover" class="cover"
-                        onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\'cover-placeholder\'><div class=\'loading\'></div></div>';">
+                    <a href="{{ url_for('game_details', appid=game.appid) }}">
+                        <img src="{{ game.cover_path }}" alt="{{ game.name }} Cover" class="cover"
+                            onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\'cover-placeholder\'><div class=\'loading\'></div></div>';" />
+                    </a>
                     {% else %}
                     <div class="cover-placeholder">
                         <div class="loading"></div>

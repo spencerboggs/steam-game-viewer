@@ -2,10 +2,12 @@ import os
 import json
 import datetime
 import dotenv
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, flash
 from flask import Flask, render_template, send_from_directory
 from getcover import download_cover
 from getgames import get_owned_games, save_owned_games
+from gamedata import get_game_store_data
+
 
 from flask import Flask, session
 app = Flask(__name__)
@@ -105,6 +107,15 @@ def refresh_covers():
 @app.route('/covers/<filename>')
 def serve_cover(filename):
     return send_from_directory('covers', filename)
+
+@app.route('/game/<int:appid>')
+def game_details(appid):
+    game_data = get_game_store_data(appid)
+    if not game_data or not game_data.get(str(appid), {}).get('success'):
+        flash(f"Game details could not be fetched for appid {appid}.", "warning")
+        return redirect(url_for('index'))
+    details = game_data[str(appid)]['data']
+    return render_template('game_details.html', game=details)
 
 if __name__ == '__main__':
     if not check_env_credentials():
