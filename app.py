@@ -6,9 +6,15 @@ from getcover import download_cover
 from getgames import get_owned_games, save_owned_games
 
 app = Flask(__name__)
+global initial_load
+initial_load = False
 
 @app.route('/')
 def index():
+    global initial_load
+
+    # TODO: Add ability to paste in Steam ID and Key and refresh the page
+
     if not os.path.exists('owned_games.json'):
         owned_games = get_owned_games(os.getenv('STEAM_ID64'), os.getenv('STEAM_API_KEY'))
         if owned_games:
@@ -24,15 +30,18 @@ def index():
                     save_owned_games(owned_games)
                 else:
                     return "Failed to fetch owned games."
-        
-    # TODO: Add ability to paste in Steam ID and Key and refresh the page
+                
+    # TODO: Make a loading animation when covers are being downloaded
 
     with open('owned_games.json', 'r', encoding='utf-8') as f:
         games = json.load(f)['response']['games']
     
     for game in games:
         appid = game['appid']
-        download_cover(appid)
+        
+        if not initial_load:
+            download_cover(appid)
+            
         game['cover_path'] = f'/covers/{appid}.jpg'
 
         game['playtime_hours'] = round(game['playtime_forever'] / 60, 1)
@@ -41,7 +50,33 @@ def index():
             if game.get('rtime_last_played') else 'Never'
         )
 
+    initial_load = True
     return render_template('index.html', games=games)
+
+@app.route('/refresh-game-data')
+def refresh_game_data():
+    owned_games = get_owned_games(os.getenv('STEAM_ID64'), os.getenv('STEAM_API_KEY'))
+    if owned_games:
+        save_owned_games(owned_games)
+        with open('owned_games.json', 'r', encoding='utf-8') as f:
+            games = json.load(f)['response']['games']
+        for game in games:
+            appid = game['appid']
+            download_cover(appid)
+    else:
+        return "Failed to refresh owned games."
+    
+    
+@app.route('/refresh-covers')
+def refresh_covers():
+    with open('owned_games.json', 'r', encoding='utf-8') as f:
+        games = json.load(f)['response']['games']
+    
+    for game in games:
+        appid = game['appid']
+        download_cover(appid, True)
+    
+    return "Covers refreshed."
 
 @app.route('/covers/<filename>')
 def serve_cover(filename):

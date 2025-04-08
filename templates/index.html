@@ -32,6 +32,9 @@
                     <button class="sort-btn" data-sort="linux">Linux</button>
                     <button class="sort-btn" data-sort="deck">Steam Deck</button>
                 </div>
+                <div class="refresh-buttons">
+                    <button class="refresh-btn" onclick="this.textContent='Refreshing... please wait'; fetch('/refresh-game-data').then(() => setTimeout(() => window.location.href='/', 2000))">Refresh Game Data</button>
+                    <button class="refresh-btn" onclick="this.textContent='Refreshing... please wait'; fetch('/refresh-covers').then(() => setTimeout(() => window.location.href='/', 2000))">Refresh Covers</button>
             </div>
         </div>
 

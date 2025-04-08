@@ -1,11 +1,11 @@
 import os
 import requests
 
-def download_cover(appid, folder='covers'):
+def download_cover(appid, fullrefresh=False, folder='covers'):
     os.makedirs(folder, exist_ok=True)
     filepath = os.path.join(folder, f'{appid}.jpg')
 
-    if os.path.exists(filepath):
+    if not fullrefresh and os.path.exists(filepath):
         print(f'Skipped: {filepath} already exists.')
         return
 

@@ -124,6 +124,37 @@ body {
     font-weight: 600;
 }
 
+.refresh-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.refresh-btn {
+    width: 200px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.refresh-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.refresh-btn:active {
+    background: var(--primary);
+    color: var(--darker);
+    font-weight: 600;
+}
+
+
 .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
