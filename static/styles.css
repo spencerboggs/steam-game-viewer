@@ -495,17 +495,68 @@ h2 {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.back-link {
-    display: inline-block;
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
     margin-bottom: 30px;
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-main);
     font-size: 0.95rem;
-    transition: color 0.2s ease;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.back-link:hover {
-    color: var(--primary);
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.back-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.back-icon {
+    transition: transform 0.2s ease;
+}
+
+.back-button:hover .back-icon {
+    transform: translateX(-2px);
+}
+
+.back-button.accent {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: var(--darker);
+    font-weight: 600;
+}
+
+.back-button.accent:hover {
+    background: linear-gradient(90deg, #00b4e6, #0066ff);
+}
+
+.header-image-container {
+    padding: 20px 25px 0;
+    margin-bottom: 15px;
+}
+
+.header-image {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .game-details {
@@ -514,7 +565,7 @@ h2 {
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 0;
+    padding: 0 0 15px 0;
 }
 
 .game-details h1 {
@@ -525,6 +576,7 @@ h2 {
     font-weight: 600;
     letter-spacing: -0.02em;
 }
+
 
 .details-grid {
     display: grid;
@@ -556,6 +608,44 @@ h2 {
     font-size: 0.95rem;
 }
 
+.categories-section {
+    padding: 0 25px;
+    margin: 20px 0;
+}
+
+.categories-heading {
+    font-size: 1.3rem;
+    margin: 0 0 15px 0;
+    color: white;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.categories-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.category-item {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.category-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
 .description {
     padding: 0 25px 25px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -580,6 +670,14 @@ h2 {
 @media (max-width: 768px) {
     .details-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .header-image-container {
+        padding: 15px 20px 0;
+    }
+    
+    .header-image {
+        max-height: 200px;
     }
 
     .game-details h1 {
