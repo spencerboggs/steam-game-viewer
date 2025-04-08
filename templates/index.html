@@ -31,6 +31,14 @@
                     <button type="submit" class="refresh-btn">Update Credentials</button>
                 </form>
             </div> -->
+            <div class="refresh-buttons">
+                <button class="refresh-btn"
+                    onclick="this.textContent='Refreshing... please wait'; fetch('/refresh-game-data').then(() => setTimeout(() => window.location.href='/', 2000))">Refresh
+                    Game Data</button>
+                <button class="refresh-btn"
+                    onclick="this.textContent='Refreshing... please wait'; fetch('/refresh-covers').then(() => setTimeout(() => window.location.href='/', 2000))">Refresh
+                    Covers</button>
+            </div>
 
             <div class="controls-row">
                 <div class="search-container">
@@ -43,14 +51,17 @@
                     <button class="sort-btn" data-sort="name">Name (A-Z)</button>
                     <button class="sort-btn" data-sort="playtime">Playtime</button>
                     <button class="sort-btn" data-sort="last_played">Last Played</button>
+                    <span class="sort-divider"></span>
                     <button class="sort-btn" data-sort="windows">Windows</button>
                     <button class="sort-btn" data-sort="mac">Mac</button>
                     <button class="sort-btn" data-sort="linux">Linux</button>
                     <button class="sort-btn" data-sort="deck">Steam Deck</button>
+                    <span class="sort-divider"></span>
+                    <button class="sort-btn" data-sort="workshop">Has Workshop</button>
+                    <button class="sort-btn" data-sort="market">Has Market</button>
+                    <button class="sort-btn" data-sort="dlc">Has DLC</button>
                 </div>
-                <div class="refresh-buttons">
-                    <button class="refresh-btn" onclick="this.textContent='Refreshing... please wait'; fetch('/refresh-game-data').then(() => setTimeout(() => window.location.href='/', 2000))">Refresh Game Data</button>
-                    <button class="refresh-btn" onclick="this.textContent='Refreshing... please wait'; fetch('/refresh-covers').then(() => setTimeout(() => window.location.href='/', 2000))">Refresh Covers</button>
+                
             </div>
         </div>
 
@@ -69,7 +80,8 @@
             <div class="game" data-name="{{ game.name.lower() }}" data-playtime="{{ game.playtime_hours }}"
                 data-last-played="{{ game.last_played }}" data-windows="{{ game.playtime_windows_forever }}"
                 data-mac="{{ game.playtime_mac_forever }}" data-linux="{{ game.playtime_linux_forever }}"
-                data-deck="{{ game.playtime_deck_forever }}">
+                data-deck="{{ game.playtime_deck_forever }}" data-workshop="{{ game.has_workshop }}"
+                data-market="{{ game.has_market }}" data-dlc="{{ game.has_dlc }}">
 
                 <div class="cover-container">
                     {% if game.cover_path %}
@@ -88,14 +100,15 @@
                     <h2>{{ game.name }}</h2>
 
                     <div class="stats">
+                        <hr>
                         <div class="stat playtime">
                             <span class="stat-label">Total Playtime</span>
                             <span class="stat-value">{{ game.playtime_hours }} hours</span>
                         </div>
 
-                        <div class="stat">
-                            <span class="stat-label">App ID</span>
-                            <span class="stat-value">{{ game.appid }}</span>
+                        <div class="stat last-played">
+                            <span class="stat-label">Last Played</span>
+                            <span class="stat-value">{{ game.last_played }}</span>
                         </div>
 
                         <div class="stat">
@@ -118,10 +131,27 @@
                             <span class="stat-value">{{ game.playtime_deck_forever }} min</span>
                         </div>
 
-                        <div class="stat last-played">
-                            <span class="stat-label">Last Played</span>
-                            <span class="stat-value">{{ game.last_played }}</span>
+                        <hr>
+                        <div class="stat">
+                            <span class="stat-label">App ID</span>
+                            <span class="stat-value">{{ game.appid }}</span>
                         </div>
+
+                        <div class="stat">
+                            <span class="stat-label">Has Workshop</span>
+                            <span class="stat-value {{ 'green-text' if game.has_workshop else 'red-text' }}">{{ game.has_workshop }}</span>
+                        </div>
+                        
+                        <div class="stat">
+                            <span class="stat-label">Has Market</span>
+                            <span class="stat-value {{ 'green-text' if game.has_market else 'red-text' }}">{{ game.has_market }}</span>
+                        </div>
+                        
+                        <div class="stat">
+                            <span class="stat-label">Has DLC</span>
+                            <span class="stat-value {{ 'green-text' if game.has_dlc else 'red-text' }}">{{ game.has_dlc }}</span>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -195,10 +225,10 @@
                             break;
 
                         case 'last_played':
-                            valueA = new Date(a.dataset.lastPlayed || '1970-01-01');
-                            valueB = new Date(b.dataset.lastPlayed || '1970-01-01');
-                            return sortDirection === 'asc'
-                                ? valueA - valueB
+                            valueA = Date.parse(a.dataset.lastPlayed) || 0;
+                            valueB = Date.parse(b.dataset.lastPlayed) || 0;
+                            return sortDirection === 'asc' 
+                                ? valueA - valueB 
                                 : valueB - valueA;
 
                         case 'windows':
@@ -219,6 +249,21 @@
                         case 'deck':
                             valueA = parseFloat(a.dataset.deck) || 0;
                             valueB = parseFloat(b.dataset.deck) || 0;
+                            break;
+
+                        case 'workshop':
+                            valueA = a.dataset.workshop === 'True' ? 1 : 0;
+                            valueB = b.dataset.workshop === 'True' ? 1 : 0;
+                            break;
+
+                        case 'market':
+                            valueA = a.dataset.market === 'True' ? 1 : 0;
+                            valueB = b.dataset.market === 'True' ? 1 : 0;
+                            break;
+
+                        case 'dlc':
+                            valueA = a.dataset.dlc === 'True' ? 1 : 0;
+                            valueB = b.dataset.dlc === 'True' ? 1 : 0;
                             break;
 
                         default:

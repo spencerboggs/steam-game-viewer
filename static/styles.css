@@ -100,6 +100,15 @@ body {
     color: rgba(255, 255, 255, 0.5);
 }
 
+.sort-divider {
+    width: 1px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    display: inline-block;
+    margin: 0 10px;
+    vertical-align: middle;
+}
+
 .sort-btn {
     padding: 8px 16px;
     background: rgba(255, 255, 255, 0.08);
@@ -127,6 +136,8 @@ body {
 
 .refresh-buttons {
     display: flex;
+    justify-content: center;
+    margin-top: -40px;
     gap: 8px;
 }
 
@@ -210,6 +221,16 @@ h2 {
     letter-spacing: -0.02em;
 }
 
+hr {
+    margin-top: -5px;
+    margin-bottom: -10px;
+    grid-column: span 2;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    height: 0.5px;
+    border: none;
+}
+
 .stats {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -235,11 +256,14 @@ h2 {
     font-weight: 500;
 }
 
-.playtime {
-    grid-column: span 2;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+.green-text {
+    color: #63be66;
+    font-weight: 600;
+}
+
+.red-text {
+    color: #f55e5e;
+    font-weight: 600;
 }
 
 .playtime .stat-value {
@@ -247,9 +271,6 @@ h2 {
     font-weight: 600;
 }
 
-.last-played {
-    grid-column: span 2;
-}
 
 .last-played .stat-value {
     color: var(--accent);
