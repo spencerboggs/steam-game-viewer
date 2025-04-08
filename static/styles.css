@@ -59,7 +59,7 @@ body {
     flex-wrap: wrap;
     gap: 15px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .search-container {
@@ -571,7 +571,7 @@ hr {
 
 .header-image {
     width: 100%;
-    max-height: 300px;
+    /* max-height: 300px; */
     object-fit: cover;
     border-radius: 6px;
     display: block;
@@ -632,6 +632,10 @@ hr {
 .categories-section {
     padding: 0 25px;
     margin: 20px 0;
+    padding-top: 20px;
+    padding-bottom: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
 }
 
 .categories-heading {
@@ -671,7 +675,7 @@ hr {
     padding: 0 25px 25px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 15px;
-    padding-top: 25px;
+    padding-top: 20px;
 }
 
 .description h2 {
@@ -698,7 +702,8 @@ hr {
     }
     
     .header-image {
-        max-height: 200px;
+        /* max-height: 200px; */
+        max-height: none;
     }
 
     .game-details h1 {
