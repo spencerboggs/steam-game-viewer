@@ -31,6 +31,7 @@
                     <button type="submit" class="refresh-btn">Update Credentials</button>
                 </form>
             </div> -->
+            
             <div class="refresh-buttons">
                 <button class="refresh-btn"
                     onclick="this.textContent='Refreshing... please wait'; fetch('/refresh-game-data').then(() => setTimeout(() => window.location.href='/', 2000))">Refresh
