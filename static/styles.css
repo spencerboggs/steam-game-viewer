@@ -598,7 +598,6 @@ hr {
     letter-spacing: -0.02em;
 }
 
-
 .details-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -693,21 +692,22 @@ hr {
 }
 
 .launch-btn {
-    background-color: #4CAF50;
-    color: white;
+    display: block;
+    width: 100%;
+    grid-column: span 2;
+    margin: 0 auto;
+    padding: 12px 20px;
+    background: var(--primary);
+    color: var(--darker);
     border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
+    border-radius: 6px;
     cursor: pointer;
-    border-radius: 5px;
-    margin-top: 10px;
+    font-family: var(--font-main);
 }
 
 .launch-btn:hover {
-    background-color: #45a049;
+    background: #00b4e6;
+    color: var(--darker);
 }
 
 @media (max-width: 768px) {
