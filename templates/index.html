@@ -31,7 +31,7 @@
                     <button type="submit" class="refresh-btn">Update Credentials</button>
                 </form>
             </div> -->
-            
+
             <div class="refresh-buttons">
                 <button class="refresh-btn"
                     onclick="this.textContent='Refreshing... please wait'; fetch('/refresh-game-data').then(() => setTimeout(() => window.location.href='/', 2000))">Refresh
@@ -49,18 +49,18 @@
 
             <div class="controls-row">
                 <div class="sort-buttons">
-                    <button class="sort-btn" data-sort="name">Name (A-Z)</button>
-                    <button class="sort-btn" data-sort="playtime">Playtime</button>
-                    <button class="sort-btn" data-sort="last_played">Last Played</button>
+                    <button class="sort-btn" data-sort="name" data-default-direction="asc">Name (A-Z)</button>
+                    <button class="sort-btn" data-sort="playtime" data-default-direction="desc">Playtime</button>
+                    <button class="sort-btn" data-sort="last_played" data-default-direction="desc">Last Played</button>
                     <span class="sort-divider"></span>
-                    <button class="sort-btn" data-sort="windows">Windows</button>
-                    <button class="sort-btn" data-sort="mac">Mac</button>
-                    <button class="sort-btn" data-sort="linux">Linux</button>
-                    <button class="sort-btn" data-sort="deck">Steam Deck</button>
+                    <button class="sort-btn" data-sort="windows" data-default-direction="desc">Windows</button>
+                    <button class="sort-btn" data-sort="mac" data-default-direction="desc">Mac</button>
+                    <button class="sort-btn" data-sort="linux" data-default-direction="desc">Linux</button>
+                    <button class="sort-btn" data-sort="deck" data-default-direction="desc">Steam Deck</button>
                     <span class="sort-divider"></span>
-                    <button class="sort-btn" data-sort="workshop">Has Workshop</button>
-                    <button class="sort-btn" data-sort="market">Has Market</button>
-                    <button class="sort-btn" data-sort="dlc">Has DLC</button>
+                    <button class="sort-btn" data-sort="workshop" data-default-direction="desc">Has Workshop</button>
+                    <button class="sort-btn" data-sort="market" data-default-direction="desc">Has Market</button>
+                    <button class="sort-btn" data-sort="dlc" data-default-direction="desc">Has DLC</button>
                 </div>
                 
             </div>
@@ -196,7 +196,7 @@
                         sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
                     } else {
                         currentSort = sortType;
-                        sortDirection = 'asc';
+                        sortDirection = this.dataset.defaultDirection || 'asc';
                     }
 
                     sortButtons.forEach(btn => btn.classList.remove('active'));

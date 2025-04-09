@@ -46,24 +46,60 @@
                 </div>
             </div>
 
-            <div class="categories-section">
-                <h2 class="categories-heading">Categories</h2>
-                <div class="categories-list">
-                    {% for category in game.categories %}
-                        <span class="category-item">{{ category.description }}</span>
-                    {% endfor %}
+            <div class="info-sections">
+                <div class="categories-section">
+                    <h2 class="categories-heading">Categories</h2>
+                    <div class="categories-list">
+                        {% for category in game.categories %}
+                            <span class="category-item">{{ category.description }}</span>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 
+            <div class="info-sections">
+                {% if game.short_description %}
+                <div class="description">
+                    <h2>About</h2>
+                    <p>{{ game.short_description }}</p>
+                </div>
+                {% endif %}
+            
+                {% if game.supported_languages %}
+                <div class="languages-section">
+                    <h2>Languages</h2>
+                    <div class="languages-list">
+                        {% set cleaned = game.supported_languages
+                        | striptags
+                        | replace('*', '')
+                        | replace('languages with full audio support', '')
+                        | trim()
+                        %}
+                        {% for lang in cleaned.split(',') %}
+                        <span class="language">{{ lang.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- use the price_overview with currency and final_formatted if is_free is false -->
+        <!-- {% if game.is_free %}
+        <div class="price-section">
+            <h2>Price</h2>
+            <p>This game is free to play.</p>
+        </div>
+        {% endif %}
+        
+        {% if game.price_overview and game.price_overview.currency and game.price_overview.final_formatted %}
+            <div class="price-section">
+                <h2>Price</h2>
+                <p>{{ game.price_overview.final_formatted }}</p>
+            </div>
+        {% endif %} -->
             
 
-            {% if game.short_description %}
-            <div class="description">
-                <h2>About</h2>
-                <p>{{ game.short_description }}</p>
-            </div>
-            {% endif %}
-        </div>
     </div>
 </body>
 

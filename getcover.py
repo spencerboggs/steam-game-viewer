@@ -9,7 +9,8 @@ def download_cover(appid, fullrefresh=False, folder='covers'):
         print(f'Skipped: {filepath} already exists.')
         return
 
-    url = f'https://cdn.cloudflare.steamstatic.com/steam/apps/{appid}/library_600x900.jpg'
+    """ url = f'https://cdn.cloudflare.steamstatic.com/steam/apps/{appid}/library_600x900.jpg' """
+    url = f'https://cdn.cloudflare.steamstatic.com/steam/apps/{appid}/header.jpg'
     response = requests.get(url, stream=True)
 
     if response.status_code == 200:
