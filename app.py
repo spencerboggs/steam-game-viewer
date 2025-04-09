@@ -1,8 +1,9 @@
 import os
+import subprocess
 import json
 import datetime
 import dotenv
-from flask import request, redirect, url_for, flash
+from flask import request, redirect, url_for, flash, jsonify
 from flask import Flask, render_template, send_from_directory
 from getcover import download_cover
 from getgames import get_owned_games, save_owned_games
@@ -116,6 +117,16 @@ def game_details(appid):
         return redirect(url_for('index'))
     details = game_data[str(appid)]['data']
     return render_template('game_details.html', game=details)
+
+@app.route('/launch_game/<appid>', methods=['GET'])
+def launch_game(appid):
+    try:
+        if os.name == 'nt':
+            subprocess.Popen(f'start steam://run/{appid}', shell=True)
+            
+        return jsonify({'status': 'success', 'message': f'Game {appid} launched!'}), 200
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': f'Failed to launch game {appid}: {str(e)}'}), 500
 
 if __name__ == '__main__':
     if not check_env_credentials():

@@ -153,6 +153,8 @@
                             <span class="stat-value {{ 'green-text' if game.has_dlc else 'red-text' }}">{{ game.has_dlc }}</span>
                         </div>
 
+                        <button class="launch-btn" data-appid="{{ game.appid }}">Launch Game</button>
+
                     </div>
                 </div>
             </div>
@@ -171,6 +173,13 @@
             let sortDirection = 'asc';
 
             sortGames();
+
+            document.querySelectorAll('.launch-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const appid = this.getAttribute('data-appid');
+                    launchGame(appid);
+                });
+            });
 
             searchInput.addEventListener('input', function () {
                 const searchTerm = this.value.toLowerCase();
@@ -320,6 +329,26 @@
 
             document.querySelector(`.sort-btn[data-sort="${currentSort}"]`).classList.add('active');
             updateSortButtonText();
+
+            function launchGame(appid) {
+                if (!appid) {
+                    console.error('No appid provided');
+                    alert('No appid provided');
+                    return;
+                }
+
+                fetch(`/launch_game/${appid}`).then(response => {
+                    if (response.ok) {
+                        return `Game ${appid} launched!`
+                    } else {
+                        alert(`Failed to launch game ${appid}`);
+                    }
+                }).catch(error => {
+                    console.error('Error launching game:', error);
+                    alert('An error occurred while launching the game.');
+                });
+            }
+
         });
     </script>
 </body>
