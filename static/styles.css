@@ -221,6 +221,19 @@ h2 {
     letter-spacing: -0.02em;
 }
 
+h3 {
+    grid-column: span 2;
+    text-align: center;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    margin-top: 5px;
+    padding-top: 10px;
+    margin-bottom: -25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 hr {
     margin-top: -5px;
     margin-bottom: -10px;
@@ -720,7 +733,6 @@ hr {
     }
     
     .header-image {
-        /* max-height: 200px; */
         max-height: none;
     }
 
@@ -734,4 +746,87 @@ hr {
         padding-left: 20px;
         padding-right: 20px;
     }
+}
+
+.rating-container {
+    grid-column: span 2;
+    margin-top: 0px;
+    text-align: center;
+}
+
+.stars {
+    font-size: 24px;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    position: relative;
+}
+
+.star {
+    font-size: 50px;
+    color: #ccc;
+    position: relative;
+    padding: 0 2px;
+    display: inline-block;
+}
+
+.star::before {
+    content: "★";
+    font-size: 50px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    opacity: 0;
+    color: #007BFF;
+    transition: color 0.2s, opacity 0.2s;
+}
+
+.star.active::before,
+.star.half::before {
+    opacity: 1;
+}
+
+.star.half::before {
+    width: 50%;
+    left: 2px;
+}
+
+.stars:hover .star::before {
+    opacity: 0;
+}
+
+.star.hover-full::before {
+    opacity: 1 !important;
+    width: 100% !important;
+    left: 0 !important;
+}
+
+.star.hover-half::before {
+    opacity: 1 !important;
+    width: 50% !important;
+    left: 2px !important;
+}
+
+.clear-rating {
+    grid-column: span 2;
+    margin-top: -20px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+}
+
+.clear-rating-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }

@@ -16,21 +16,6 @@
         </div>
 
         <div class="controls">
-            
-            <!-- Add a section to override STEAM_API_KEY and STEAM_ID64 -->
-            <!-- <div class="controls-row">
-                <form id="steamCredsForm" onsubmit="submitSteamCredentials(event)">
-                    <div class="steam-api-key">
-                        <label for="steamApiKey">Steam API Key:</label>
-                        <input type="text" id="steamApiKey" value="{{ steam_api_key }}">
-                    </div>
-                    <div class="steam-id64">
-                        <label for="steamId64">Steam ID64:</label>
-                        <input type="text" id="steamId64" value="{{ steam_id64 }}">
-                    </div>
-                    <button type="submit" class="refresh-btn">Update Credentials</button>
-                </form>
-            </div> -->
 
             <div class="refresh-buttons">
                 <button class="refresh-btn"
@@ -154,6 +139,20 @@
                         </div>
 
                         <button class="launch-btn" data-appid="{{ game.appid }}">Launch Game</button>
+
+                        <h3>Your Rating</h3>
+                        <div class="rating-container" data-appid="{{ game.appid }}">
+                            <div class="stars">
+                                {% for i in range(1, 6) %}
+                                <span class="star" data-value="{{ i }}">☆</span>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" class="rating-value" value="{{ game.rating or 0 }}">
+                        </div>
+
+                        <div class="clear-rating">
+                            <button class="clear-rating-btn" data-appid="{{ game.appid }}">Clear Rating</button>
+                        </div>
 
                     </div>
                 </div>
@@ -349,6 +348,112 @@
                 });
             }
 
+            document.querySelectorAll('.rating-container').forEach(container => {
+                const stars = Array.from(container.querySelectorAll('.star')).sort((a, b) => {
+                    return parseInt(a.getAttribute('data-value')) - parseInt(b.getAttribute('data-value'));
+                });
+                const ratingValue = container.querySelector('.rating-value');
+                const appid = container.getAttribute('data-appid');
+                let currentRating = parseFloat(ratingValue.value) || 0;
+
+                updateStars(currentRating);
+
+                stars.forEach(star => {
+                    star.addEventListener('click', function (e) {
+                        const value = parseInt(this.getAttribute('data-value'));
+                        const rect = this.getBoundingClientRect();
+                        const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+
+                        const clickedRating = isHalf ? value - 0.5 : value;
+
+                        if (currentRating === clickedRating) {
+                            currentRating = 0;
+                        } else {
+                            currentRating = clickedRating;
+                        }
+
+                        updateStars(currentRating);
+                        saveRating(appid, currentRating);
+                    });
+
+                    star.addEventListener('mousemove', function (e) {
+                        const value = parseInt(this.getAttribute('data-value'));
+                        const rect = this.getBoundingClientRect();
+                        const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+                        const hoverRating = isHalf ? value - 0.5 : value;
+
+                        stars.forEach(s => {
+                            const sValue = parseInt(s.getAttribute('data-value'));
+                            s.classList.remove('hover-full', 'hover-half');
+
+                            if (sValue < hoverRating) {
+                                s.classList.add('hover-full');
+                            } else if (sValue === Math.ceil(hoverRating)) {
+                                if (hoverRating % 1 !== 0) {
+                                    s.classList.add('hover-half');
+                                } else {
+                                    s.classList.add('hover-full');
+                                }
+                            }
+                        });
+                    });
+
+                    star.addEventListener('mouseleave', function () {
+                        stars.forEach(s => {
+                            s.classList.remove('hover-full', 'hover-half');
+                        });
+                    });
+                });
+
+                function updateStars(rating) {
+                    stars.forEach(star => {
+                        const value = parseInt(star.getAttribute('data-value'));
+                        star.classList.remove('active', 'half');
+
+                        if (rating >= value) {
+                            star.classList.add('active');
+                        } else if (rating + 0.5 === value) {
+                            star.classList.add('half');
+                        }
+                    });
+
+                    ratingValue.value = rating;
+                }
+
+                function saveRating(appid, rating) {
+                    fetch('/save-rating', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ appid, rating })
+                    }).then(res => {
+                        if (!res.ok) console.error('Failed to save rating');
+                    });
+                }
+            });
+
+            document.querySelectorAll('.clear-rating-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const appid = this.getAttribute('data-appid');
+                    const ratingContainer = document.querySelector(`.rating-container[data-appid="${appid}"]`);
+                    const ratingValue = ratingContainer.querySelector('.rating-value');
+                    const stars = Array.from(ratingContainer.querySelectorAll('.star'));
+
+                    ratingValue.value = 0;
+                    stars.forEach(star => star.classList.remove('active', 'half'));
+
+                    fetch('/clear-rating', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ appid })
+                    }).then(res => {
+                        if (!res.ok) console.error('Failed to clear rating');
+                    });
+                });
+            });
         });
     </script>
 </body>

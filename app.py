@@ -17,6 +17,8 @@ app.secret_key = os.urandom(32)
 dotenv.load_dotenv()
 
 initial_load = False
+RATINGS_FILE = 'game_ratings.json'
+OWNED_GAMES_FILE = 'owned_games.json'
 
 def check_env_credentials():
     steam_id64 = os.getenv('STEAM_ID64')
@@ -26,6 +28,16 @@ def check_env_credentials():
     test_data = get_owned_games(steam_id64, steam_api_key)
     return bool(test_data and 'response' in test_data)
 
+def load_ratings():
+    if os.path.exists(RATINGS_FILE):
+        with open(RATINGS_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_ratings(ratings):
+    with open(RATINGS_FILE, 'w') as f:
+        json.dump(ratings, f)
+
 @app.route('/')
 def index():
     global initial_load
@@ -34,6 +46,8 @@ def index():
 
     if not steam_id64 or not steam_api_key:
         return redirect(url_for('credentials'))
+
+    ratings = load_ratings()
 
     if (request.args.get('steam_id64') or request.args.get('steam_api_key')) and os.path.exists('owned_games.json'):
         os.remove('owned_games.json')
@@ -52,7 +66,7 @@ def index():
         games = json.load(f)['response']['games']
     
     for game in games:
-        appid = game['appid']
+        appid = str(game['appid'])
         if not initial_load:
             download_cover(appid)
         game['cover_path'] = f'/covers/{appid}.jpg'
@@ -61,9 +75,35 @@ def index():
             datetime.datetime.utcfromtimestamp(game['rtime_last_played']).strftime('%Y-%m-%d %H:%M:%S')
             if game.get('rtime_last_played') else 'Never'
         )
+        game['rating'] = ratings.get(appid, 0)
 
     initial_load = True
     return render_template('index.html', games=games, steam_id64=steam_id64, steam_api_key=steam_api_key)
+
+@app.route('/save-rating', methods=['POST'])
+def save_rating():
+    data = request.get_json()
+    appid = str(data['appid'])
+    rating = data['rating']
+    
+    ratings = load_ratings()
+    ratings[appid] = rating
+    save_ratings(ratings)
+    
+    return jsonify({'status': 'success'})
+
+@app.route('/clear-rating', methods=['POST'])
+def clear_rating():
+    data = request.get_json()
+    appid = str(data['appid'])
+    
+    ratings = load_ratings()
+    if appid in ratings:
+        del ratings[appid]
+        save_ratings(ratings)
+    
+    return jsonify({'status': 'success'})
+
 
 @app.route('/credentials', methods=['GET', 'POST'])
 def credentials():
@@ -90,7 +130,7 @@ def refresh_game_data():
     owned_games = get_owned_games(steam_id64, steam_api_key)
     if owned_games:
         save_owned_games(owned_games)
-        with open('owned_games.json', 'r', encoding='utf-8') as f:
+        with open(OWNED_GAMES_FILE, 'r', encoding='utf-8') as f:
             games = json.load(f)['response']['games']
         for game in games:
             download_cover(game['appid'])
@@ -99,7 +139,7 @@ def refresh_game_data():
 
 @app.route('/refresh-covers')
 def refresh_covers():
-    with open('owned_games.json', 'r', encoding='utf-8') as f:
+    with open(OWNED_GAMES_FILE, 'r', encoding='utf-8') as f:
         games = json.load(f)['response']['games']
     for game in games:
         download_cover(game['appid'], True)
