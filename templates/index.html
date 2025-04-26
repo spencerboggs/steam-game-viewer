@@ -37,6 +37,8 @@
                     <button class="sort-btn" data-sort="name" data-default-direction="asc">Name (A-Z)</button>
                     <button class="sort-btn" data-sort="playtime" data-default-direction="desc">Playtime</button>
                     <button class="sort-btn" data-sort="last_played" data-default-direction="desc">Last Played</button>
+                    <button class="sort-btn" data-sort="rating" data-default-direction="desc">Rating</button>
+
                     <span class="sort-divider"></span>
                     <button class="sort-btn" data-sort="windows" data-default-direction="desc">Windows</button>
                     <button class="sort-btn" data-sort="mac" data-default-direction="desc">Mac</button>
@@ -239,6 +241,12 @@
                             return sortDirection === 'asc' 
                                 ? valueA - valueB 
                                 : valueB - valueA;
+
+                        case 'rating':
+                            valueA = parseFloat(a.querySelector('.rating-value')?.value || 0);
+                            valueB = parseFloat(b.querySelector('.rating-value')?.value || 0);
+                            break;
+
 
                         case 'windows':
                             valueA = parseFloat(a.dataset.windows) || 0;
